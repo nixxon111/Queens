@@ -7,7 +7,6 @@ import javax.swing.*;
 
 public class ShowBoard {
 	public static void main(String[] arg) {
-		System.out.println("hi");
 		QueensLogic l = new QueensLogic();
 		
 		int size = 8;
