@@ -109,6 +109,7 @@ public class QueensGUI extends JComponent implements MouseListener
 			
 		}
 	}
+	
 
 	// Not used methods from the interface of MouseListener 
 	public void mouseEntered(MouseEvent e){}

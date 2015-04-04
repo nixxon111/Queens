@@ -10,8 +10,12 @@ public class ShowBoard {
 	public static void main(String[] arg) {
 		QueensLogic l = new QueensLogic();
 		
+		
+		
 		int size = 6;
 		l.initializeGame(size);
+		
+		
 
 		QueensGUI g = new QueensGUI(l);
 
@@ -22,5 +26,6 @@ public class ShowBoard {
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.getContentPane().add(g);
 		f.setVisible(true);
+		g.repaint();
 	}
 }
