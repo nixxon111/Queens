@@ -12,7 +12,7 @@ public class ShowBoard {
 		
 		
 		
-		int size = 6;
+		int size = 8;
 		l.initializeGame(size);
 		
 		

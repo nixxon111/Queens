@@ -26,7 +26,7 @@ public class QueensLogic {
 
 		fact = JFactory.init(TWO_MIL, TWO_HUN_THOUSAND);
 
-		fact.setVarNum(64);
+		fact.setVarNum(x*x);
 		rules = buildRules2();
 
 		updateBoard();
@@ -316,23 +316,35 @@ public class QueensLogic {
 			// rows
 			for (int j = 0; j < y; j++) {
 				//col
-				int column = -13;
-				for (int j2 = 0; j2 < x; j2++) {
-					if (j2==i) {
-						continue;
-					}
-					if (board[i][j]!=-1) {
-						break;
-					}
-					column = j2;
-				}
-				// row
-				int row = -17;
-				for (int j2 = 0; j2 < y; j2++) {
-					
+				if (board[i][j]==0) {
+					checkIfOnly(i,j);
 				}
 			}
 		}
+		
+	}
+
+	private void checkIfOnly(int c, int r) {
+		int column = -13;
+		for (int i = 0; i < x; i++) {
+			if (i==c) {
+				continue;
+			}
+			if (board[i][r]==0) {
+				return;
+			}
+		}
+		// row
+		int row = -17;
+		for (int i = 0; i < y; i++) {
+			if (i==r) {
+				continue;
+			}
+			if (board[c][i]==0) {
+				return;
+			}
+		}
+		board[c][r]=1;
 		
 	}
 
