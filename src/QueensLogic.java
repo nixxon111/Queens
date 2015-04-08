@@ -27,12 +27,12 @@ public class QueensLogic {
 		fact = JFactory.init(TWO_MIL, TWO_HUN_THOUSAND);
 
 		fact.setVarNum(x*x);
-		rules = buildRules2();
+		rules = buildRules();
 
 		updateBoard();
 	}
 
-	private BDD buildRules2() {
+	private BDD buildRules() {
 		BDD[] rows = new BDD[y];
 		// per column
 		for (int i = 0; i < x; i++) {
@@ -169,94 +169,6 @@ public class QueensLogic {
 		return oneTrue;
 	}
 
-	private BDD buildRules() {
-		BDD[] rows = new BDD[y];
-		for (int i = 0; i < rows.length; i++) {
-
-			BDD row = fact.zero();
-			BDD notRow = fact.zero();
-			for (int j = 0; j < y; j++) {
-				row.xorWith(fact.ithVar((i * x) + j));
-				notRow.orWith(fact.nithVar((i * x) + j));
-			}
-			row.andWith(notRow);
-			rows[i] = row;
-		}
-
-		BDD[] columns = new BDD[x];
-
-		for (int i = 0; i < columns.length; i++) {
-			BDD column = fact.zero();
-			BDD notColumn = fact.zero();
-			for (int j = 0; j < y; j++) {
-				column.xorWith(fact.ithVar((j * x) + i));
-				notColumn.orWith(fact.nithVar((j * x) + i));
-			}
-			column.xorWith(fact.zero());
-			column.andWith(notColumn);
-			columns[i] = column;
-		}
-
-		// north-west/south-east diagonal
-
-		// from top left towards right
-		BDD[] diag = new BDD[y];
-		int z = 0;
-		for (int i = 0; i + z < columns.length; i++) {
-
-			BDD row = fact.zero();
-			BDD notRow = fact.zero();
-			for (int j = 0; j + z < rows.length && i + z < columns.length; j++) {
-				// System.out.println("i"+i + " j"+j +" z"+z+
-				// " : ((j+z)*x)+(i+z)"+(((j+z)*x)+(i+z)));
-				row.xorWith(fact.ithVar(((j + z) * x) + (i + z)));
-				notRow.orWith(fact.nithVar(((j + z) * x) + (i + z)));
-				z++;
-			}
-			row.xorWith(fact.zero());
-			row.andWith(notRow);
-			diag[i] = row;
-			z = 0;
-		}
-		// from leftside of rows and down
-		BDD[] diag2 = new BDD[x - 1];
-		z = 0;
-		for (int i = 1; i + z < rows.length; i++) {
-
-			BDD row = fact.zero();
-			BDD notRow = fact.zero();
-			for (int j = 0; j + z < columns.length && i + z < columns.length; j++) {
-				row.xorWith(fact.ithVar(((i + z) * x) + (j + z)));
-				notRow.orWith(fact.nithVar(((i + z) * x) + (j + z)));
-				z++;
-			}
-			row.xorWith(fact.zero());
-			row.andWith(notRow);
-			diag2[i - 1] = row;
-			z = 0;
-		}
-
-		BDD conjunction = fact.one();
-		for (int i = 0; i < columns.length; i++) {
-			// System.out.println(columns[i]);
-			conjunction.andWith(columns[i]);
-		}
-
-		for (int i = 0; i < rows.length; i++) {
-			conjunction.andWith(rows[i]);
-		}
-
-		/*
-		 * for (int i = 0; i < diag.length; i++) { conjunction.andWith(diag[i]);
-		 * }
-		 * 
-		 * System.out.println(conjunction); for (int i = 0; i < diag2.length;
-		 * i++) { conjunction.andWith(diag2[i]); }
-		 */
-		System.out.println(conjunction);
-		System.out.println(conjunction.isZero());
-		return conjunction;
-	}
 
 	public void restrict(int var_x, boolean isTrue) {
 		if (isTrue) {
@@ -290,23 +202,6 @@ public class QueensLogic {
 
 		placeRemaining();
 
-		// System.out.println(fact.ithVar(column+(row*x)).isOne());
-		// System.out.println(rules);
-
-		// insert queen, and set appropriate variable = true in BDD
-		// change related variables = false, by calling mark(var X),
-		// E.G.: queen in 0,0 (length 8*8), set variables 1-7 = false
-
-		// loop through all fields on board
-		// if var x_i == false, mark with cross (-1)
-
-		// check vertical/horizontal rows, if no queen and only one var
-		// "available"
-		// set = true (and call method mark(var X))
-
-		// check if tautology = we have won
-		// check if unsatisfiable = we have lost
-
 		return true;
 	}
 
@@ -325,7 +220,7 @@ public class QueensLogic {
 	}
 
 	private void checkIfOnly(int c, int r) {
-		int column = -13;
+//column
 		for (int i = 0; i < x; i++) {
 			if (i==c) {
 				continue;
@@ -335,7 +230,6 @@ public class QueensLogic {
 			}
 		}
 		// row
-		int row = -17;
 		for (int i = 0; i < y; i++) {
 			if (i==r) {
 				continue;
@@ -384,53 +278,4 @@ public class QueensLogic {
 		 */
 	}
 
-	private void paintDiagonal(int c, int r, int[][] board) {
-		int i = 1;
-		while (c + i < board.length && r + i < board[0].length) {
-			if (board[c + i][r + i] == 0) {
-				board[c + i][r + i] = -1;
-			}
-			i++;
-		}
-		i = 1;
-		while (c - i >= 0 && r + i < board[0].length) {
-			if (board[c - i][r + i] == 0) {
-				board[c - i][r + i] = -1;
-			}
-			i++;
-		}
-		i = 1;
-		while (c + i < board.length && r - i >= 0) {
-			if (board[c + i][r - i] == 0) {
-				board[c + i][r - i] = -1;
-			}
-			i++;
-		}
-		i = 1;
-		while (c - i >= 0 && r - i >= 0) {
-			if (board[c - i][r - i] == 0) {
-				board[c - i][r - i] = -1;
-			}
-			i++;
-		}
-
-	}
-
-	private void paintVertical(int c, int r, int[][] board) {
-		for (int i = 0; i < board[c].length; i++) {
-			if (board[c][i] == 0) {
-				board[c][i] = -1;
-			}
-		}
-
-	}
-
-	private void paintHorizontal(int c, int r, int[][] board) {
-		for (int i = 0; i < board.length; i++) {
-			if (board[i][r] == 0) {
-				board[i][r] = -1;
-			}
-		}
-
-	}
 }
