@@ -64,7 +64,7 @@ public class QueensLogic {
 			}
 			System.out.print("vars: ");
 			System.out.println(vars);
-			diag1[i] = oneMaybeTrue(vars);
+			diag1[i] = oneOrZeroTrue(vars);
 		}
 
 		BDD[] diag2 = new BDD[y - 1];
@@ -77,7 +77,7 @@ public class QueensLogic {
 			}
 			System.out.print("vars2: ");
 			System.out.println(vars);
-			diag2[i - 1] = oneMaybeTrue(vars);
+			diag2[i - 1] = oneOrZeroTrue(vars);
 		}
 
 		BDD[] diag3 = new BDD[y];
@@ -89,7 +89,7 @@ public class QueensLogic {
 			}
 			System.out.print("vars3: ");
 			System.out.println(vars);
-			diag3[i] = oneMaybeTrue(vars);
+			diag3[i] = oneOrZeroTrue(vars);
 		}
 
 		BDD[] diag4 = new BDD[y - 1];
@@ -104,7 +104,7 @@ public class QueensLogic {
 			}
 			System.out.print("vars4: ");
 			System.out.println(vars);
-			diag4[i - 1] = oneMaybeTrue(vars);
+			diag4[i - 1] = oneOrZeroTrue(vars);
 		}
 
 		BDD conjunction = fact.one();
@@ -134,7 +134,7 @@ public class QueensLogic {
 		return conjunction;
 	}
 
-	private BDD oneMaybeTrue(ArrayList<Integer> vars) {
+	private BDD oneOrZeroTrue(ArrayList<Integer> vars) {
 		BDD oneTrue = fact.zero();
 		BDD noneTrue = fact.one();
 		for (int i = 0; i < vars.size(); i++) {
@@ -142,7 +142,6 @@ public class QueensLogic {
 			for (int j = 0; j < vars.size(); j++) {
 				ithTrue.andWith(vars.get(i) == vars.get(j) ? fact.ithVar(vars
 						.get(j)) : fact.nithVar(vars.get(j)));
-
 			}
 			// System.out.println("ithTrue " + i + " " + ithTrue);
 			oneTrue.orWith(ithTrue);
@@ -260,22 +259,6 @@ public class QueensLogic {
 		int var = c + r * x;
 		rules.restrictWith(fact.ithVar(var));
 
-		/*
-		 * BDD[] rows = new BDD[y]; BDD row = fact.zero(); for (int i = 0; i <
-		 * x; i++) { for (int j = 0; j < y; j++) { if (j==c && r==i) { row =
-		 * row.xor(fact.one()); } else row = row.xor(fact.ithVar((i*x)+j)); }
-		 * rows[i] = row; }
-		 * 
-		 * BDD[] columns = new BDD[x]; BDD column = fact.zero(); for (int i = 0;
-		 * i < x; i++) { for (int j = 0; j < y; j++) { if (j==c && r==i) {
-		 * column = column.xor(fact.one()); } else column =
-		 * column.xor(fact.ithVar((j*x)+i)); } columns[i] = column; }
-		 * 
-		 * BDD conjunction = fact.one(); for (int i = 0; i < x; i++) {
-		 * conjunction = conjunction.andWith(columns[i]); } for (int i = 0; i <
-		 * y; i++) { conjunction = conjunction.andWith(rows[i]); }
-		 * System.out.println(conjunction); return conjunction;
-		 */
 	}
 
 }
